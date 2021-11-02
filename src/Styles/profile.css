@@ -1,0 +1,38 @@
+.profileCard{
+    margin: 5%;
+    padding:3%;
+    border-style: solid;
+    border-color: tan;
+    border-radius: 25px;
+}
+.profilePic{
+    width: 220px;
+    margin:0;
+    padding: 0;
+    box-shadow: 20px 10px  tan;
+}
+.iconStyle{
+    margin-right:3px;
+    color: tan;
+}
+.revCard{
+    margin-left: 10%;
+    width: 80%;
+    font-size: 20px;
+    text-align: initial;
+    border-style: solid;
+    padding:2%
+}
+.work{
+    margin: 8%;
+    background-color: tan;
+}
+/* .imgWork{
+    background-color: white;
+    margin:20px;
+    padding:15px;
+}
+.imgWork img{
+     width:200px
+} */
+

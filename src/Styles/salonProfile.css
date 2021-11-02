@@ -1,0 +1,18 @@
+.info{
+    margin: 2%;
+}
+.imgs{
+    margin-inline: 4%;
+}
+.profileAv{
+    width: 80%;
+}
+.view{
+    width: 90vw;
+    text-align: right;
+    float: left;
+    display: block;
+    color: black;
+    text-decoration-line: underline;
+    text-decoration-style: dashed;
+}

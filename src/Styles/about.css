@@ -1,0 +1,15 @@
+.about{
+    margin:8%;
+}
+.colored{
+    background-color: #e8ded1;
+    padding:10%;
+}
+.salonImg{
+    margin-top:5%;
+}
+@media only screen and (max-width: 600px){
+    .salonImg{
+        width: 200px;
+    }
+}
