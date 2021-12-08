@@ -11,25 +11,17 @@ import SignUpEmp from "./Core/SignUpEmployee";
 import SignUpBus from "./Core/SignUpBusiness";
 import About from "./Core/About"
 import Profile from "./Components/profile"
-import salonProfile from "./Components/salonProfile";
+import SalonProfile from "./Components/salonProfile";
 import Edit from "./Core/edit";
+import Ind from "./Components/Ind";
+import Staff from "./Components/Staff";
+import IndProfile from "./Components/IndProfile";
+import EmpProfile from "./Components/EmpProfile";
 
 
 
 const Routes = () => {
-//   const [data, setData] = React.useState(null);
-
-//   React.useEffect(() => {
-//     fetch("/api")
-//       .then((res) => res.json())
-//       .then((data) => setData(data.message));
-//   }, []);
-
- 
-    
-//   console.log(data);
   return (
-   
     <div className='App'>
       <Router>
         <Switch>
@@ -43,8 +35,12 @@ const Routes = () => {
           <Route path='/SignUpEmployee' exact component={SignUpEmp} />
           <Route path='/SignUpBusiness' exact component={SignUpBus} />
           <Route path='/Profile' exact component={Profile} />
-          <Route path='/salonProfile' exact component={salonProfile} />
+          <Route path='/SalonProfile' exact component={SalonProfile} />
           <Route path='/edit' component={Edit} />
+          <Route path='/Ind' component={Ind} />
+          <Route path='/IndProfile' component={IndProfile} />
+          <Route path='/Staff' component={Staff}/>
+          <Route path='/EmpProfile' component={EmpProfile} />
           {/* <Route path='/events' exact component={Event} />
           <Route path='/contact' exact component={Contact} />
           <Route path='/edit' component={Edit} /> */} 

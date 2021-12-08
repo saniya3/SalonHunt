@@ -7,7 +7,6 @@ import { updateProfile,getAuth, createUserWithEmailAndPassword} from "firebase/a
 import avt1 from "../Assets/Images/avt1.png"; 
 
 function SignUpBus(){
-    const [pic,setPic]=useState();
     const [check,setCheck]=useState({
         nails:false,
         hair:false,
@@ -31,6 +30,7 @@ function SignUpBus(){
         }
     }
     function handleCheckN(){
+        console.log(check)
         setCheck(prevValue=>{
             return{
                nails:!prevValue.nails,
@@ -43,6 +43,7 @@ function SignUpBus(){
         })
     }
     function handleCheckH(){
+        console.log(check)
         setCheck(prevValue=>{
             return{
                nails:prevValue.nails,
@@ -55,6 +56,7 @@ function SignUpBus(){
         })
     }
     function handleCheckM(){
+        console.log(check)
         setCheck(prevValue=>{
             return{
                nails:prevValue.nails,
@@ -69,7 +71,7 @@ function SignUpBus(){
     function handleCheckT(){
         setCheck(prevValue=>{
             return{
-               nails:!prevValue.nails,
+               nails:prevValue.nails,
                hair:prevValue.hair,
                makeup:prevValue.makeup,
                tattoo:!prevValue.tattoo,
@@ -78,7 +80,8 @@ function SignUpBus(){
             }
         })
     }
-    function handleCheckB(event){
+    function handleCheckB(){
+        console.log(check)
         setCheck(prevValue=>{
             return{
                nails:prevValue.nails,
@@ -90,10 +93,10 @@ function SignUpBus(){
             }
         })
     }
-    function handleCheckL(event){
+    function handleCheckL(){ 
         setCheck(prevValue=>{
             return{
-               nails:!prevValue.nails,
+               nails:prevValue.nails,
                hair:prevValue.hair,
                makeup:prevValue.makeup,
                tattoo:prevValue.tattoo,
@@ -111,19 +114,23 @@ function SignUpBus(){
     const locRef=useRef(null);
     const empRef=useRef(null);
 
+    let services="";
     function SignUp(event){
         event.preventDefault();
-            createUserWithEmailAndPassword(auth,emailRef.current.value, passwordRef.current.value)
+        createUserWithEmailAndPassword(auth,emailRef.current.value, passwordRef.current.value)
             .then((user) => {
-            
                 // Signed in 
-                console.log(user);
                 updateProfile(auth.currentUser,{
                     photoURL:displayImage,
                     displayName:userRef.current.value,
                     email:emailRef.current.value,
+                    phoneNumber:contactRef.current.value
                 })
-                
+                for(let k in check){
+                    if(check[k]===true){
+                        services+=(k.charAt(0).toUpperCase()+k.substr(1).toLowerCase())+" "
+                    }   
+                }
                 const displayImg=document.getElementById("displayImg");
                 const file = displayImg.files[0];
                 var storageRef = Ref(storage,"/ProfilePictures/"+user.user.uid+"/");
@@ -133,31 +140,29 @@ function SignUpBus(){
                 uploadBytes(storageRef, file,metadata).then((snapshot) => {
                     console.log('Uploaded a blob or file!');
                 }).then(()=>{
-                    getDownloadURL(Ref(storage, "/ProfilePictures/"+user.user.uid)).then((url) => {
-                        setPic(url);
+                    const promises=getDownloadURL(Ref(storage, "/ProfilePictures/"+user.user.uid)).then((URL) => {  
                         updateProfile(auth.currentUser,{
-                            photoURL:pic
+                            photoURL:URL
+                        })
+                        console.log(auth.currentUser.photoURL)
+                        return URL;
+                    })
+                    Promise.resolve(promises).then((URL) => {
+                        push(ref(database,"/business"),{
+                            company:userRef.current.value,
+                            email:emailRef.current.value,
+                            contact:contactRef.current.value,
+                            location:locRef.current.value,
+                            employees:empRef.current.value,
+                            services:services,
+                            uid:user.user.uid,
+                            photoURL:URL
+                        }).then(()=>{
+                            console.log(auth.currentUser.photoURL)
+                            window.open('/?key='+user.user.uid,"_self"); 
                         })
                     })
-
                 })
-                // ...
-                
-                push(ref(database,"/business"),{
-                    company:userRef.current.value,
-                    email:emailRef.current.value,
-                    contact:contactRef.current.value,
-                    location:locRef.current.value,
-                    employees:empRef.current.value,
-                    services:{check},
-                    uid:user.user.uid,
-                    photoURL:user.user.photoURL
-                    
-                }).then(()=>{
-                    console.log(user.user.photoURL);
-                    // window.open('/',"_self"); 
-                })
-                
             })      
             .catch((error) => {
                 const errorM = error.message;

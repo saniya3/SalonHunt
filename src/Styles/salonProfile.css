@@ -16,3 +16,51 @@
     text-decoration-line: underline;
     text-decoration-style: dashed;
 }
+.modal {
+    display: none;
+    width: 50%;
+    height: 35%;
+    position: fixed;
+    margin-top: 15%;
+    margin-left: 25%;
+    z-index: 1;
+    background-color: rgb(228, 228, 228);
+}
+.modal2{
+    display: none;
+    width: 50%;
+    height: 25%;
+    position: fixed;
+    margin-top: -22%;
+    margin-left: 17%;
+    z-index: 5;
+    background-color: rgb(228, 228, 228);
+}
+.modal_content {
+    width: 125%;
+    position: absolute;
+}
+.rev {
+    position:relative;
+    height: 100px;
+    margin-left: 10%;
+    width: 80%;
+    font-size: 20px;
+    text-align: initial;
+    border-style: solid;
+    border: 1px solid #ddd;
+}
+.revBut {
+    position:absolute;
+    top: 5px;
+    right:5px;
+    
+}
+.area {
+    position:relative;
+    border:none;
+    height: 95px;
+    resize: none;
+    outline: none; 
+}
+

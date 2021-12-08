@@ -3,17 +3,15 @@ import {Row,Col} from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import Card from "@material-ui/core/Card";
 
-function SalonCard(props){
-    console.log("happening");
-    console.log(props.urlkey)
+function EmpCard(props){
     return(
-       <Col md={4}>
-       <Link to={"/SalonProfile?id="+props.id+"&key="+props.urlkey} style={{textDecoration:"none"}}>
+       <Col md={3}>
+       <Link to={"/EmpProfile?id="+props.id+"&key="+props.urlkey} style={{textDecoration:"none"}}>
         <Card className="profileCard">
             <Row>
                 <Col md={8}>
-                    <h5 className="Ftitle">{props.title}</h5>
-                    <p>Location:{props.loc}</p>
+                    <h5 className="Ftitle">{props.name}</h5>
+                    <p>Bio:{props.bio}</p>
                     <p>Experience:{props.exp}</p>
                     <p>Expertise:{props.ser}</p>
                 </Col>
@@ -27,4 +25,4 @@ function SalonCard(props){
     );
 }
 
-export default SalonCard
+export default EmpCard

@@ -155,7 +155,6 @@ code {
 }
 
 /* Home page cards*/
-
 .go-corner {
   display: flex;
   align-items: center;
@@ -171,7 +170,7 @@ code {
 }
 
 .card {
-  display: block;
+  display: flex;
   position: relative;
   background-color: #f2f8f9;
   border-radius: 4px;
@@ -183,9 +182,10 @@ code {
 }
   
 .card::before {
-  content: "";
+  content: "Hell";
+  color: #e8ded1;
   position: "absolute";
-  z-index: -1;
+  z-index: -10;
   top: -16px;
   right: -16px;
   background:  #e8ded1;
@@ -198,14 +198,14 @@ code {
 }
 
 .card:hover:before {
-    transform: scale(30);
+  transform: scale(30);
 }
 
 .img:hover{
   transform: scale(1.2);
 }
-/*Business page*/
 
+/*Business page*/
 .headingImg{
   text-align: center;
   font-style: bold;

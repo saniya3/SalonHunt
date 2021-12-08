@@ -4,6 +4,7 @@
     border-style: solid;
     border-color: tan;
     border-radius: 25px;
+    cursor: pointer;
 }
 .profilePic{
     width: 220px;

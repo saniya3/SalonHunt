@@ -30,9 +30,10 @@ const Form=(props)=>{
                 push(ref(database,"/users"),{
                     username:userRef.current.value,
                     email:emailRef.current.value,
-                    photoURL:""
+                    photoURL:"",
+                    uid:user.user.uid
                 }).then(()=>{
-                window.open('/',"_self");
+                window.open('/?key='+user.user.uid,"_self");
                 }) 
             })
             .catch((error) => {
@@ -44,23 +45,20 @@ const Form=(props)=>{
        else{
         setErrorMessage("Passwords do not match");
        }
-        
     }
     function Login(event){
         event.preventDefault();
         signInWithEmailAndPassword(auth, emailRef.current.value, passwordRef.current.value)
             .then((user) => {
             console.log(user+" loggedin");
-            window.open('/',"_self"); 
-           
+            window.open('/?key='+user.user.uid,"_self");  
         })
         .catch((error) => {
             const errorCode = error.code;
             const errorM = error.message;
             console.log(errorCode+errorM);
             setErrorMessage(errorM);
-        });
-        
+        });  
     }
     function fbAuth(event){
         event.preventDefault();
@@ -72,9 +70,10 @@ const Form=(props)=>{
             push(ref(database,"/users"),{
                 username:user.displayName,
                 email:user.email,
-                photoURL:user.photoURL
+                photoURL:user.photoURL,
+                uid:result.user.uid
             }).then(()=>{
-                window.open('/',"_self"); 
+                window.open('/?key='+user.uid,"_self"); 
             })
             
             // This gives you a Facebook Access Token. You can use it to access the Facebook API.
@@ -91,6 +90,7 @@ const Form=(props)=>{
             const email = error.email;
             // The AuthCredential type that was used.
             const credential = FacebookAuthProvider.credentialFromError(error);
+            console.log(errorMessage)
 
             // ...
         });

@@ -7,12 +7,10 @@ import { ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reac
 
 function SignUp(){
     const userIsRegistered=false;
-
     const [isOpen,setOpen]=useState(false);
     function toggle(){
         setOpen(!isOpen);
     }
-
     return(
         <div>
             <NavBar/>
