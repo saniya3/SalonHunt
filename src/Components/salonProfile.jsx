@@ -7,11 +7,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { getAuth } from "@firebase/auth";
 import { ref as Ref ,getDownloadURL} from "@firebase/storage";
 import { storage } from "../fire";
-import { push,ref, onValue} from "firebase/database";
+import { push,ref, onValue, set} from "firebase/database";
 import { database } from "../fire";
 import { database as db } from "../fire";
 import RevCard from "./RevCard";
-import { faPeopleArrows,faHandsHelping,faLocationArrow,faEnvelope,faPhone,faTimesCircle } from '@fortawesome/free-solid-svg-icons'
+import { faPeopleArrows,faHandsHelping,faLocationArrow,faEnvelope,faPhone,faTimesCircle,faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 
 
 function SalonProfile(props){
@@ -62,67 +62,128 @@ function SalonProfile(props){
                     phone:value.val().contact
                 })
               }
+              
             })
           setArr(dataArr2[0])
-        })
-        
-        
+        })   
     },[])
-   
+
+    const [fields, setFields] = useState([{ value: null }]);
+
+    function getStorage(){
+        try{
+        getDownloadURL(Ref(storage, "/GalleryWall/"+URLkey+"/s1")).then((URL) => {  
+            setS1(URL)
+        })&&getDownloadURL(Ref(storage, "/GalleryWall/"+URLkey+"/s2")).then((URL) => {  
+                setS2(URL)
+            })
+        }
+        catch(e){
+            setS1(null)
+            setS2(null)
+            console.log(e)    
+        }
+        finally{
+            setS1(null)
+            setS2(null)
+            console.log("handled") 
+        }
         
+    }
+
+    function getReviews(){
+        onValue(ref(db, 'business/'+dataArr.key+"/reviews/"), (snap) => {
+            let revArr2=[]
+            snap.forEach(function(v){
+                revArr2.push({
+                    name:v.val().user,
+                    rev:v.val().review,
+                    key:v.key,
+                    id:v.val().uid
+                })
+            }) 
+            if(revArr2.length!==0){
+                setRevArr(revArr2.map(createRev)) 
+            } 
+            onValue(ref(db, 'business/'+dataArr.key+"/slots/fields"), (snap) => {
+                console.log(snap.val())
+                if(snap.val()!==null){
+                    setFields(snap.val())   
+                }         
+            }, {
+                onlyOnce: true
+            })
+        })
+    }
+   
+    if(s1===undefined || s2===undefined){
+        getStorage()
+    }
+
+    if(revArr.length===0){
+        getReviews()
+    }
+
     function handleClick(event) {
         const modal = document.querySelector(".modal")
         modal.style.display = "block";
     }
-   
-    getDownloadURL(Ref(storage, "/GalleryWall/"+URLkey+"/s1")).then((URL) => {  
-        setS1(URL)
-    }).catch((error)=>{
-        onValue(ref(db, 'business/'+dataArr.key+"/reviews/"), (snap) => {
-            let revArr2=[]
-            snap.forEach(function(v){
-                revArr2.push({
-                    name:v.val().user,
-                    rev:v.val().review,
-                    key:v.key,
-                    id:v.val().uid
-                })
-            }) 
-            setRevArr(revArr2.map(createRev))  
-        })
-    })
-    getDownloadURL(Ref(storage, "/GalleryWall/"+URLkey+"/s2")).then((URL) => {  
-        setS2(URL)
-    }).then(()=>{
-        onValue(ref(db, 'business/'+dataArr.key+"/reviews/"), (snap) => {
-            let revArr2=[]
-            snap.forEach(function(v){
-                revArr2.push({
-                    name:v.val().user,
-                    rev:v.val().review,
-                    key:v.key,
-                    id:v.val().uid
-                })
-            }) 
-            setRevArr(revArr2.map(createRev))  
-        })
-    })
+
+    function handleClick2(event) {
+        const modal = document.querySelector(".modal2")
+        modal.style.display = "block";
+    }
 
     function handleRev(){
         setRev(true);
     }
     function AddRev(){
         if(revRef.current.value!==""){ 
-           console.log(dataArr.key)
-                    push(ref(database,"/business/"+dataArr.key+"/reviews/"),{
-                        user:getAuth().currentUser.displayName,
-                        review:revRef.current.value
-                    }).then(()=>{
-                        console.log("done");
-                        revRef.current.value="";
-                    })  
+            console.log(dataArr.key)
+            push(ref(database,"/business/"+dataArr.key+"/reviews/"),{
+                user:getAuth().currentUser.displayName,
+                review:revRef.current.value
+            }).then(()=>{
+                console.log("done");
+                revRef.current.value="";
+            })  
         }
     }
+
+    function handleChange(i, event) {
+        console.log(i+event)
+        const values = [...fields];
+        values[i].value = event.target.value;
+        setFields(values);
+    }
+
+    function handleAdd(event) {
+        event.preventDefault();
+        const values = [...fields];
+        values.push({ value: null });
+        setFields(values);
+    }
+ 
+    function handleRemove(i) { 
+        const values = [...fields];
+        console.log(values.splice(i, 1))
+        setFields(values);
+        set(ref(database,"/business/"+dataArr.key+"/slots"),{
+            values
+        })
+    }
+    
+    function handleSubmit(e){
+        e.preventDefault();
+        console.log(dataArr.key)
+        set(ref(database,"/business/"+dataArr.key+"/slots"),{
+            fields
+        }).then(()=>{
+            console.log("updated")
+        })
+        
+    }
+    
     return(
         <div>
            <NavBar/>
@@ -146,12 +207,12 @@ function SalonProfile(props){
                        <div class="modal">
                         <div>
                            <br/>
-                                <Row>
-                                    <Col md={10}>  
-                                    </Col>
-                                    <Col md={2}>
-                                       <FontAwesomeIcon icon={faTimesCircle} className="close" onClick={()=>document.querySelector(".modal").style.display="none"}/>
-                                    </Col>
+                            <Row>
+                                <Col md={10}>  
+                                </Col>
+                                <Col md={2}>
+                                    <FontAwesomeIcon icon={faTimesCircle} className="close" onClick={()=>document.querySelector(".modal").style.display="none"}/>
+                                </Col>
                                 <Row class="modal_content">
                                     <div className="exp"><FontAwesomeIcon icon={faEnvelope} className="iconStyle" /><b>Email: </b>
                                     {dataArr.mail}
@@ -161,10 +222,73 @@ function SalonProfile(props){
                                     {dataArr.phone}
                                     </div>
                                 </Row>
-                                </Row>   
+                            </Row>   
                          </div>
                         </div>
-                       <button className="btn btn-success info">Book a slot</button>
+                        <div class="modal2">
+                        <div>
+                           <br/>
+                            <Row>
+                                <Col md={10}>  
+                                </Col>
+                                <Col md={2}>
+                                    <FontAwesomeIcon icon={faTimesCircle} className="close" onClick={()=>document.querySelector(".modal2").style.display="none"}/>
+                                </Col>
+                                {URLkey===keyy&&(
+                                <Row class="modal_content">
+                                    <div className="formCard">
+                                    <form className="form1"> 
+                                        <p>Add/edit time slots (24hr format)
+                                        <button className="btn btn-info info" onClick={handleAdd}>+</button>
+                                        </p>
+                                        {fields.map((field, idx) => {
+                                            return (
+                                            <div key={`${field}-${idx}`}>
+                                            <Row>
+                                             <Col md={11}>
+                                               <input type="input" placeholder="00:00-00:00" value={fields[idx].value}  onChange={e => handleChange(idx, e)}/>
+                                             </Col>
+                                             <Col md={1}>
+                                               <FontAwesomeIcon icon={faMinusCircle} className="close2" onClick={()=>handleRemove(idx)}/>
+                                             </Col> 
+                                             </Row>
+                                            </div>
+                                            );
+                                        })}
+                                        <hr/>
+                                        <button className="formbutton" onClick={handleSubmit}>Save Changes</button>
+                                        <br/>
+                                        <br/>
+                                    </form>
+                                    </div>
+                                </Row>)}
+                                {URLkey!==keyy&&(
+                                    <Row class="modal_content">
+                                    <div className="formCard">
+                                    <form className="form1"> 
+                                        <p>Available Slots (24hr format)
+                                        </p>
+                                        {fields.map((field, idx) => {
+                                            return (
+                                                <div key={`${field}-${idx}`}>
+                                                <Row>
+                                                <Col md={11}>
+                                                <input type="input" placeholder="00:00-00:00" value={fields[idx].value}  onChange={e => handleChange(idx, e)}/>
+                                                </Col>
+                                                </Row>
+                                                </div>
+                                            );
+                                        })}
+                                        <br/>
+                                    </form>
+                                    </div>
+                                    </Row>        
+                                )}
+                            </Row> 
+                         </div>
+                        </div>
+                        {URLkey===keyy&&(<button className="btn btn-success info" onClick={handleClick2}>Add slots</button>)}
+                        {URLkey!==keyy&&(<button className="btn btn-success info" onClick={handleClick2}>Available slots</button>)}
                        <button className="btn btn-info info" onClick={handleClick}>Contact Info</button>
                    </Col>
                    <Col md={6} className="dp">
@@ -208,8 +332,7 @@ function SalonProfile(props){
                 <br/>
                     <br/>
                 {revArr.length!==0&&(<div className="revCard">
-                 {revArr}
-                  
+                 {revArr} 
                 </div>)} 
                 <br/>
                 <br/>

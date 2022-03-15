@@ -75,9 +75,18 @@ function IndProfile(props){
         const modal2 = document.querySelector(".modal2")
         modal2.style.display = "block";
     }
-    getDownloadURL(Ref(storage, "/Work/"+URLkey+"/s1")).then((URL) => {  
-        setS1(URL)
-    }).then(()=>{
+
+    function getStorage(){
+        getDownloadURL(Ref(storage, "/Work/"+URLkey+"/s1")).then((URL) => {  
+            setS1(URL)
+        })&& getDownloadURL(Ref(storage, "/Work/"+URLkey+"/s2")).then((URL) => {  
+            setS2(URL)
+        })&& getDownloadURL(Ref(storage, "/Work/"+URLkey+"/s3")).then((URL) => {  
+            setS3(URL)
+        })
+    }
+
+    function getReviews(){
         onValue(ref(db, 'individual/'+dataArr.key+"/reviews/"), (snap) => {
             let revArr2=[]
             snap.forEach(function(v){
@@ -88,15 +97,20 @@ function IndProfile(props){
                     id:v.val().uid
                 })
             }) 
-            setRevArr(revArr2.map(createRev))  
+            if(revArr2.length!==0){
+                setRevArr(revArr2.map(createRev))
+            }  
         })
-    })
-    getDownloadURL(Ref(storage, "/Work/"+URLkey+"/s2")).then((URL) => {  
-        setS2(URL)
-    })
-    getDownloadURL(Ref(storage, "/Work/"+URLkey+"/s3")).then((URL) => {  
-        setS3(URL)
-    })
+    }
+
+    if(s1===undefined || s2===undefined || s3===undefined){
+        getStorage()
+    }
+
+    if(revArr.length===0){
+        getReviews()
+    }
+
     function handleRev(){
         setRev(true);
     }
@@ -166,6 +180,8 @@ function IndProfile(props){
                             <Row class="modal_content2">
                                 <div className="exp"><FontAwesomeIcon icon={faAddressCard} className="iconStyle" /><b>Address: </b>
                                 {dataArr.add}
+                                <p></p>
+                                <br/>
                                 </div>
                             </Row>
                             </Row>  

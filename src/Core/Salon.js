@@ -11,19 +11,25 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMapMarkerAlt ,faSearch,faFilter,faRupeeSign} from '@fortawesome/free-solid-svg-icons'
 
 
+function SetCase(str){
+    if(str!==undefined){
+      return str.charAt(0).toUpperCase() + str.substr(1).toLowerCase()
+    }
+}
 
 function createCard(data){
   const params = new URLSearchParams(window.location.search)
   const key=params.get('key');
   console.log(key)
   console.log("done")
+  console.log(data.title)
   return(
     <SalonCard
         id={data.id}
         urlkey={key}
         key={data.key}
-        title={data.title.charAt(0).toUpperCase() + data.title.substr(1).toLowerCase()}
-        loc={data.loc.charAt(0).toUpperCase() + data.loc.substr(1).toLowerCase()}
+        title={SetCase(data.title)}
+        loc={SetCase(data.loc)}
         exp={data.exp}
         ser={data.ser}
         img={data.img}
@@ -65,12 +71,12 @@ dataArr.map((item)=>{
 })
 
 let salonName=salonNames.map((item)=>
-   item.charAt(0).toUpperCase() + item.substr(1).toLowerCase()
+   SetCase(item)
 )
 salonName=Array.from(new Set(salonName));
 
 let locations=location.map((item)=>
-   item.charAt(0).toUpperCase() + item.substr(1).toLowerCase()
+    SetCase(item)
 )
 locations=Array.from(new Set(locations))
 

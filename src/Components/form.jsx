@@ -96,10 +96,9 @@ const Form=(props)=>{
         });
      }
     return(
+        
         <div>
-        {props.isRegistered && (
-          <NavBar/>
-        )}
+       
          <div className="formCard">
           <form className="form1"> 
             <h3 className="Ftitle">{props.isRegistered ? "Login" : "Sign Up"}</h3>

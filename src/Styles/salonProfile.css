@@ -28,12 +28,8 @@
 }
 .modal2{
     display: none;
-    width: 50%;
-    height: 25%;
-    position: fixed;
-    margin-top: -22%;
-    margin-left: 17%;
-    z-index: 5;
+    width: 100%;
+    z-index: 1;
     background-color: rgb(228, 228, 228);
 }
 .modal_content {
@@ -63,4 +59,8 @@
     resize: none;
     outline: none; 
 }
+.close2{
+    color: red;
+}
+
 
